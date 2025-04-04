@@ -48,8 +48,6 @@ spec:
         - mountPath: /var/lib/mysql
           name: mysql
       volumes:
-      - name: mysql
-        emptyDir: {}
       - name: config-vol
         configMap:
           name: nginx-config
@@ -57,4 +55,8 @@ spec:
           - key: default.conf
             path: default.conf
       - name: data
-        emptyDir: {}
+        volume:
+          name: my-volume
+          PersistentVolumeClaim:
+            claimName: my-pvc
+     
