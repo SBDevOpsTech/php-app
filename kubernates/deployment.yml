@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inginx-deployment
+  name: nginx-deployment
   labels:
     app: nginx
 spec:
@@ -19,3 +19,42 @@ spec:
         image: nginx:1.14.2
         ports:
         - containerPort: 80
+        volumeMounts:
+        - name: config-vol
+          mountPath: /etc/nginx/conf.d
+        - name: data
+          mountPath: /var/www/html
+      - name: php
+        image: dockersiri194/siriphp-app:latest
+        ports:
+        - containerPort: 9000
+        volumeMounts:
+        - name: data
+          mountPath: /var/www/html
+      - name: mysqldb
+        image: mysql:latest
+        ports:
+        - containerPort: 3306
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: rootpassword
+        - name: MYSQL_DATABASE
+          value: testdb
+        - name: MYSQL_USER
+          value: user
+        - name: MYSQL_PASSWORD
+          value: password
+        volumeMounts:
+        - mountPath: /var/lib/mysql
+          name: mysql
+      volumes:
+      - name: mysql
+        emptyDir: {}
+      - name: config-vol
+        configMap:
+          name: nginx-config
+          items:
+          - key: default.conf
+            path: default.conf
+      - name: data
+        emptyDir: {}
