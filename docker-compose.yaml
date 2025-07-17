@@ -1,5 +1,5 @@
 version: '3.8'
-
+# Docker Compose configuration for a PHP, Nginx, and MySQL stack
 services:
   php:
     build: ./php
